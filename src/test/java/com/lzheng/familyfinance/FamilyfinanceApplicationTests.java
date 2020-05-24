@@ -47,7 +47,7 @@ class FamilyfinanceApplicationTests {
     void contextLoads3() {
        Order order=new Order();
        order.setIId(1);
-       order.setMId(1);
+       order.setMId(2);
        order.setOMoney(new BigDecimal(13.5));
        order.setStatus(1);
        order.setODate(new Date());
@@ -78,6 +78,12 @@ class FamilyfinanceApplicationTests {
 
     }
 
+    @Test
+    void contextLoads7() {
+        itemDao.selectByType("支出").forEach(h->{
+            System.out.println(h.getIName());
+        });
 
+    }
 
 }

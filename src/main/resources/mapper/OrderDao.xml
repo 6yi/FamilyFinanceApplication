@@ -112,11 +112,11 @@
   </update>
 
   <select id="selectAll"  resultMap="BaseResultMap">
-    select * from "order"
+    select * from "order" LEFT JOIN item on "order".i_id=item.i_id LEFT  JOIN  member on "order".m_id=member.m_id  where "order"."status"=1
   </select>
 
   <select id="selectByDate"  resultMap="BaseResultMap">
-    select * from "order" LEFT JOIN item on "order".i_id=item.i_id LEFT  JOIN  member on "order".m_id=member.m_id  where  #{endDate} >= o_date and o_date >=#{startDate}
+    select * from "order" LEFT JOIN item on "order".i_id=item.i_id LEFT  JOIN  member on "order".m_id=member.m_id  where  #{endDate} >= o_date and o_date >=#{startDate} and "order"."status"=1
   </select>
 
 

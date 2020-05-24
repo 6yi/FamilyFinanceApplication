@@ -9,19 +9,19 @@ package com.lzheng.familyfinance.exception;
  */
 
 
-public class LoginException extends RuntimeException{
-    private String code;
-
-    public LoginException(String code, String message) {
+public class GlobalException extends RuntimeException{
+    private Integer code;
+    private static final long serialVersionUID = 1L;
+    public GlobalException(Integer code, String message) {
         super(message);
         this.code = code;
     }
 
-    public String getCode() {
+    public Integer getCode() {
         return code;
     }
 
-    public void setCode(String code) {
+    public void setCode(Integer code) {
         this.code = code;
     }
 

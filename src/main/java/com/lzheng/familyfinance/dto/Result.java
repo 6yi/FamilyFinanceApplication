@@ -1,5 +1,7 @@
 package com.lzheng.familyfinance.dto;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,10 +19,14 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Result {
+@ApiModel("返回结果")
+public class Result<T> {
 
+    @ApiModelProperty("结果状态码")
     private Integer code;
+    @ApiModelProperty("结果信息,如果是授权则是JWT")
     private String msg;
-    private List<Object> data;
+    @ApiModelProperty("结果数据")
+    private T data;
 
 }

@@ -32,7 +32,7 @@ public class Configuration {
         registrationBean.setFilter(new TokenFilter());
         //添加需要拦截的url
         List<String> urlPatterns = new ArrayList<>();
-        urlPatterns.add("/use");
+        urlPatterns.add("/order/*");
         registrationBean.addUrlPatterns(urlPatterns.toArray(new String[urlPatterns.size()]));
         return registrationBean;
     }

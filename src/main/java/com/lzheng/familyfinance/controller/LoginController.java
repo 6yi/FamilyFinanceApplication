@@ -3,14 +3,14 @@ package com.lzheng.familyfinance.controller;
 import com.lzheng.familyfinance.domain.JWT;
 import com.lzheng.familyfinance.domain.Member;
 import com.lzheng.familyfinance.dto.Result;
-import com.lzheng.familyfinance.server.MemberService;
+import com.lzheng.familyfinance.exception.GlobalException;
+import com.lzheng.familyfinance.service.MemberService;
 import com.lzheng.familyfinance.utils.JWTUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 
 /**
@@ -33,6 +33,7 @@ public class LoginController {
 
         Member member = memberService.login(username, password);
         Result result = new Result();
+
         if(member==null){
             result.setCode(500);
             result.setMsg("用户名或密码错误");
@@ -46,7 +47,5 @@ public class LoginController {
         }
         return  result;
     }
-
-
 
 }

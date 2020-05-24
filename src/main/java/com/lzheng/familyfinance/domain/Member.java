@@ -1,24 +1,34 @@
 package com.lzheng.familyfinance.domain;
 
 import java.io.Serializable;
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
  * member
- * @author 
+ * @author 6yi
  */
 @Data
+@ApiModel("成员实体")
 public class Member implements Serializable {
+    @ApiModelProperty("ID")
     private Integer mId;
 
+    @ApiModelProperty("登陆用户名")
     private String mUsername;
 
+    @ApiModelProperty("登陆密码")
     private String mPassword;
 
+    @ApiModelProperty("用户昵称")
     private String mName;
 
+    @ApiModelProperty("用户角色类型")
     private String mType;
 
+    @ApiModelProperty("用户状态")
     private Integer status;
 
     private static final long serialVersionUID = 1L;

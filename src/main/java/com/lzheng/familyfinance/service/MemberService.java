@@ -1,4 +1,4 @@
-package com.lzheng.familyfinance.server;
+package com.lzheng.familyfinance.service;
 
 import cn.hutool.crypto.digest.Digester;
 import com.lzheng.familyfinance.dao.MemberDao;

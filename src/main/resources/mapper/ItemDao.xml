@@ -14,8 +14,19 @@
     select 
     <include refid="Base_Column_List" />
     from item
-    where i_id = #{iId,jdbcType=INTEGER}
+    where i_id = #{iId,jdbcType=INTEGER} and "status"=1
   </select>
+
+
+
+  <select id="selectByType" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from item
+    where i_type = #{iId} and "status"=1
+  </select>
+
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from item
     where i_id = #{iId,jdbcType=INTEGER}

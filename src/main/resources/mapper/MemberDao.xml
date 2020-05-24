@@ -23,7 +23,7 @@
     select
     <include refid="Base_Column_List" />
     from member
-    where m_username = #{username} and m_password=#{password}
+    where m_username = #{username} and m_password=#{password} and "status"=1
   </select>
 
 

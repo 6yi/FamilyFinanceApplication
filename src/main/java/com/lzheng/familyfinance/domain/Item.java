@@ -1,6 +1,8 @@
 package com.lzheng.familyfinance.domain;
 
 import java.io.Serializable;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -8,18 +10,21 @@ import lombok.Data;
  * @author 
  */
 @Data
+@ApiModel("支出收入项目实体")
 public class Item implements Serializable {
+    @ApiModelProperty("ID")
     private Integer iId;
 
+    @ApiModelProperty("项目名")
     private String iName;
 
+    @ApiModelProperty("项目类型")
     private String iType;
 
+    @ApiModelProperty("项目状态")
     private Integer status;
 
     private static final long serialVersionUID = 1L;
-
-
 
 
     @Override
