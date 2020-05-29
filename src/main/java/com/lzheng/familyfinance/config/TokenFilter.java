@@ -1,4 +1,5 @@
 package com.lzheng.familyfinance.config;
+import com.lzheng.familyfinance.domain.playLoad;
 import com.lzheng.familyfinance.utils.JWTUtils;
 import org.springframework.web.filter.GenericFilterBean;
 import javax.servlet.FilterChain;
@@ -24,23 +25,31 @@ public class TokenFilter  extends GenericFilterBean {
         final HttpServletRequest request = (HttpServletRequest) req;
         final HttpServletResponse response = (HttpServletResponse) res;
         //等到请求头信息authorization信息
-        final String authHeader = request.getHeader("authorization");
+
         if ("OPTIONS".equals(request.getMethod())) {
+
             response.setStatus(HttpServletResponse.SC_OK);
             chain.doFilter(req, res);
+            return;
         } else {
+            final String authHeader = request.getHeader("authorization");
+
             if (authHeader == null || !authHeader.startsWith("bearer;")) {
                 response.sendError(403);
+                return;
             }
-            final String token = authHeader.substring(7);
             try {
-                String type = JWTUtils.toJWT(token);
-                if(type==null){
+                final String token = authHeader.substring(7);
+                playLoad playLoad = JWTUtils.toJWT(token);
+                if(playLoad==null){
+                    System.out.println("playLoad is null?");
                    response.sendError(403);
+                    return;
                 }
-                request.setAttribute("type",type);
+                request.setAttribute("type",playLoad.getType());
+                request.setAttribute("mid",playLoad.getMid());
             } catch (final Exception e) {
-               response.sendError(500);
+               response.sendError(403);
             }
             chain.doFilter(req, res);
         }

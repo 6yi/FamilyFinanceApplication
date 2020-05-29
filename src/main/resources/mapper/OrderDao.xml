@@ -11,6 +11,7 @@
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="i_name" jdbcType="VARCHAR"  property="iName" />
     <result column="m_name" jdbcType="VARCHAR"  property="mName" />
+    <result column="i_type" jdbcType="VARCHAR"  property="iType" />
   </resultMap>
   <sql id="Base_Column_List">
     o_id, i_id, m_id, o_money, o_date, o_tips, "status"
@@ -119,7 +120,15 @@
     select * from "order" LEFT JOIN item on "order".i_id=item.i_id LEFT  JOIN  member on "order".m_id=member.m_id  where  #{endDate} >= o_date and o_date >=#{startDate} and "order"."status"=1
   </select>
 
+  <select id="selectByDateAndMid"  resultMap="BaseResultMap">
+    select * from "order" LEFT JOIN item on "order".i_id=item.i_id LEFT  JOIN  member on "order".m_id=member.m_id  where  #{endDate} >= o_date and o_date >=#{startDate} and "order"."status"=1 and "order".m_id=#{mid}
+  </select>
 
+  <update id="updateOrderStatus" >
+    update "order"
+    set "status" = 0
+    where o_id = #{oId} and m_id=#{mId}
+  </update>
 
 
 </mapper>

@@ -17,13 +17,11 @@
     where i_id = #{iId,jdbcType=INTEGER} and "status"=1
   </select>
 
-
-
   <select id="selectByType" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from item
-    where i_type = #{iId} and "status"=1
+    where i_type = #{type} and "status"=1
   </select>
 
 

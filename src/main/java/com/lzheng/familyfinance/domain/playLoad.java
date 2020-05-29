@@ -18,5 +18,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class playLoad{
     private String type;
+    private Integer mid;
     private Long Expired;
+
 }

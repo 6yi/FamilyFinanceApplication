@@ -4,10 +4,7 @@ import com.lzheng.familyfinance.domain.Item;
 import com.lzheng.familyfinance.dto.Result;
 import com.lzheng.familyfinance.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,9 +23,15 @@ public class ItemController {
     @Autowired
     private ItemService itemService;
 
-    @GetMapping("/getitem")
-    public Result getItem(@RequestParam(value = "type", required = true) String type){
-        List<Item> item = itemService.getItem(type);
+    @PostMapping("/getitem")
+    public Result getItem(@RequestParam(value = "type", required = true) Integer type){
+        List<Item> item=null;
+        if(type==1){
+            item= itemService.getItem("支出");
+        }else if(type==2){
+            item= itemService.getItem("收入");
+        }
+
         Result result = new Result();
         result.setCode(200);
         result.setMsg("success");

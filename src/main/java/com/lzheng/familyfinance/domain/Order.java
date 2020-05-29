@@ -36,6 +36,10 @@ public class Order implements Serializable {
     @ApiModelProperty("账单状态")
     private Integer status;
 
+    @ApiModelProperty("账单类型")
+    private String iType;
+
+
     @ApiModelProperty("账单项目名")
     private String iName;
 

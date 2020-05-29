@@ -1,15 +1,18 @@
 package com.lzheng.familyfinance.controller;
 
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import com.lzheng.familyfinance.domain.Order;
 import com.lzheng.familyfinance.dto.Result;
 import com.lzheng.familyfinance.exception.GlobalException;
 import com.lzheng.familyfinance.service.OrderService;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -29,7 +32,7 @@ public class OrderController {
     private OrderService orderService;
 
 
-    @GetMapping("/get")
+    @PostMapping("/get")
     public Result getOrder(){
         List<Order> allOrder = orderService.getAllOrder();
         Result result = new Result();
@@ -39,10 +42,33 @@ public class OrderController {
         return result;
     }
 
-    @GetMapping("/getbytime")
+    @PostMapping("/delete")
+    public Result getOrderByTime(@RequestParam(value = "oid", required = true) Integer oid
+                                 ,@RequestParam(value = "mid", required = true) Integer mid
+                                    , HttpServletRequest request){
+        try{
+            Integer tmid=(Integer) request.getAttribute("mid");
+            if(tmid!=mid){
+                throw new GlobalException(302,"你别瞎删别人的,兄弟");
+            }
+            orderService.updateOrderStatus(oid,tmid);
+            Result result = new Result();
+            result.setCode(0);
+            result.setMsg("success");
+            return result;
+        }catch (Exception e){
+            throw new GlobalException(302,e.getMessage());
+        }
+    }
+
+
+
+
+    @PostMapping("/getbytime")
     public Result getOrderByTime(@RequestParam(value = "start", required = true) String start
             ,@RequestParam(value = "end", required = true) String end){
         try{
+            System.out.println(start+"   :   "+end);
             Date startDate = DateUtil.parse(start);
             Date endDate = DateUtil.parse(end);
             List<Order> orderByTime = orderService.getOrderByTime(startDate, endDate);
@@ -55,5 +81,60 @@ public class OrderController {
             throw new GlobalException(302,e.getMessage());
         }
     }
+
+    @PostMapping("/getbytimeandmid")
+    public Result getOrderByTime(@RequestParam(value = "start", required = true) String start
+            ,@RequestParam(value = "end", required = true) String end
+            ,@RequestParam(value = "mid", required = true) Integer mid){
+        try{
+            System.out.println(start+"   :   "+end);
+            Date startDate = DateUtil.parse(start);
+            Date endDate = DateUtil.parse(end);
+            List<Order> orderByTime = orderService.getOrderByTimeAndMid(startDate, endDate,mid);
+            Result result = new Result();
+            result.setCode(0);
+            result.setMsg("success");
+            result.setData(orderByTime);
+            return result;
+        }catch (Exception e){
+            throw new GlobalException(302,e.getMessage());
+        }
+    }
+
+
+
+
+
+    @PostMapping("/addorder")
+    public Result addOrder(@RequestParam(value = "type", required = true) Integer type
+            ,@RequestParam(value = "item", required = true) Integer item
+            ,@RequestParam(value = "money", required = true) String money
+            ,@RequestParam(value = "tips", required = true) String tips
+            ,@RequestParam(value = "time", required = true) String time
+            ,@RequestParam(value = "mid", required = true) Integer mid){
+        Result result = new Result();
+        try{
+            DateTime dateTime = DateUtil.parse(time);
+
+            Order order = new Order();
+
+
+
+            order.setIId(item);
+            order.setMId(mid);
+            order.setOTips(tips);
+            order.setODate(dateTime);
+            order.setOMoney(new BigDecimal(money));
+            order.setStatus(1);
+            orderService.addOrder(order);
+            result.setCode(0);
+            result.setMsg("success");
+            return result;
+        }catch (Exception e){
+            throw new GlobalException(500,e.getMessage());
+        }
+
+    }
+
 
 }

@@ -33,8 +33,23 @@ public class Configuration {
         //添加需要拦截的url
         List<String> urlPatterns = new ArrayList<>();
         urlPatterns.add("/order/*");
+        registrationBean.setOrder(2);
         registrationBean.addUrlPatterns(urlPatterns.toArray(new String[urlPatterns.size()]));
         return registrationBean;
     }
+
+    @Bean
+    public FilterRegistrationBean corsFilterRegistration() {
+        FilterRegistrationBean registration = new FilterRegistrationBean();
+        registration.setFilter(new CorsFilter());
+        registration.addUrlPatterns("/*");
+        registration.setName("corsFilter");
+        //将其注册在其他过滤器的前面
+        registration.setOrder(0);
+
+
+        return registration;
+    }
+
 
 }

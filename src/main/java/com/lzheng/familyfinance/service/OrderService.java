@@ -35,6 +35,18 @@ public class OrderService {
 
     }
 
+    public List<Order> getOrderByTimeAndMid(Date start, Date end,Integer mid){
+
+        return orderDao.selectByDateAndMid(start,end,mid);
+
+    }
+
+    public void updateOrderStatus(Integer oId,Integer mId){
+        orderDao.updateOrderStatus(oId,mId);
+    }
+    public void  addOrder(Order order){
+        orderDao.insert(order);
+    }
 
 
 }
