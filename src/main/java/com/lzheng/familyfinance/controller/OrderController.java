@@ -2,7 +2,9 @@ package com.lzheng.familyfinance.controller;
 
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.lzheng.familyfinance.domain.Order;
+import com.lzheng.familyfinance.dto.DeleteDTO;
 import com.lzheng.familyfinance.dto.Result;
 import com.lzheng.familyfinance.exception.GlobalException;
 import com.lzheng.familyfinance.service.OrderService;
@@ -42,16 +44,19 @@ public class OrderController {
         return result;
     }
 
-    @PostMapping("/delete")
-    public Result getOrderByTime(@RequestParam(value = "oid", required = true) Integer oid
-                                 ,@RequestParam(value = "mid", required = true) Integer mid
-                                    , HttpServletRequest request){
+    @DeleteMapping("/delete")
+    public Result getOrderByTime(@RequestBody JSONObject jsonParam, HttpServletRequest request){
+
         try{
+
+            DeleteDTO deleteDTO = jsonParam.toJavaObject(DeleteDTO.class);
+            Integer mid=deleteDTO.getMid();
             Integer tmid=(Integer) request.getAttribute("mid");
             if(tmid!=mid){
                 throw new GlobalException(302,"你别瞎删别人的,兄弟");
             }
-            orderService.updateOrderStatus(oid,tmid);
+
+            orderService.updateOrderStatus(deleteDTO.getOids(),tmid);
             Result result = new Result();
             result.setCode(0);
             result.setMsg("success");
@@ -61,8 +66,20 @@ public class OrderController {
         }
     }
 
+    @PutMapping("/update")
+    public Result updateOrder(@RequestBody JSONObject jsonParam){
+        try{
+            Order order = jsonParam.toJavaObject(Order.class);
+            orderService.updateByPrimaryKey(order);
+            Result result = new Result();
+            result.setCode(0);
+            result.setMsg("success");
+            return result;
+        }catch (Exception e){
+            throw new GlobalException(302,e.getMessage());
+        }
 
-
+    }
 
     @PostMapping("/getbytime")
     public Result getOrderByTime(@RequestParam(value = "start", required = true) String start
@@ -85,11 +102,16 @@ public class OrderController {
     @PostMapping("/getbytimeandmid")
     public Result getOrderByTime(@RequestParam(value = "start", required = true) String start
             ,@RequestParam(value = "end", required = true) String end
-            ,@RequestParam(value = "mid", required = true) Integer mid){
+            ,@RequestParam(value = "mid", required = true) Integer mid
+            ,HttpServletRequest request){
         try{
-            System.out.println(start+"   :   "+end);
             Date startDate = DateUtil.parse(start);
             Date endDate = DateUtil.parse(end);
+            Integer tmid=(Integer)request.getAttribute("mid");
+            if(!mid.equals(tmid)){
+                System.out.println(mid+" : "+tmid);
+                throw new GlobalException(302,"禁止查看他人账单");
+            }
             List<Order> orderByTime = orderService.getOrderByTimeAndMid(startDate, endDate,mid);
             Result result = new Result();
             result.setCode(0);

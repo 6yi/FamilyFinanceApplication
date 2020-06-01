@@ -18,4 +18,10 @@ public interface ItemDao {
     int updateByPrimaryKey(Item record);
 
     List<Item> selectByType(String type);
+
+    List<Item> selectAll();
+
+    void updateItemStatus(Integer id);
+
+    String selectName(String iname);
 }

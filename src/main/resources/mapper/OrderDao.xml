@@ -104,11 +104,9 @@
   <update id="updateByPrimaryKey" parameterType="com.lzheng.familyfinance.domain.Order">
     update "order"
     set i_id = #{iId,jdbcType=INTEGER},
-      m_id = #{mId,jdbcType=INTEGER},
       o_money = #{oMoney,jdbcType=DECIMAL},
       o_date = #{oDate,jdbcType=TIMESTAMP},
-      o_tips = #{oTips,jdbcType=VARCHAR},
-      "status" = #{status,jdbcType=INTEGER}
+      o_tips = #{oTips,jdbcType=VARCHAR}
     where o_id = #{oId,jdbcType=INTEGER}
   </update>
 
@@ -130,5 +128,10 @@
     where o_id = #{oId} and m_id=#{mId}
   </update>
 
+  <update id="updateOrderByIid" parameterType="java.lang.Integer">
+     update "order"
+    set "status" = 0
+    where i_id=#{id}
+  </update>
 
 </mapper>

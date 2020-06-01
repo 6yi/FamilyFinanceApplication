@@ -11,6 +11,8 @@ import com.lzheng.familyfinance.domain.Item;
 import com.lzheng.familyfinance.domain.JWT;
 import com.lzheng.familyfinance.domain.Member;
 import com.lzheng.familyfinance.domain.Order;
+import com.lzheng.familyfinance.service.ItemService;
+import com.lzheng.familyfinance.service.StatisticsService;
 import com.lzheng.familyfinance.utils.JWTUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,23 +23,33 @@ import java.util.Date;
 
 @SpringBootTest
 class FamilyfinanceApplicationTests {
-//    Digester md5 = new Digester(DigestAlgorithm.MD5);
-//    @Autowired
-//    MemberDao dao;
-//    @Autowired
-//    ItemDao itemDao;
-//    @Autowired
-//    OrderDao orderDao;
+    Digester md5 = new Digester(DigestAlgorithm.MD5);
+    @Autowired
+    MemberDao dao;
+    @Autowired
+    ItemDao itemDao;
+    @Autowired
+    OrderDao orderDao;
+
+    @Autowired
+    ItemService itemService;
+
+
+    @Autowired
+    StatisticsService statisticsService;
+//
 //    @Test
 //    void contextLoads() {
 //        Member member = new Member();
 //        member.setMName("刘正");
-//        member.setMUsername("haha");
-//        member.setMType("子女");
+//        member.setMUsername("lzheng");
+//        member.setMType("家长");
 //        member.setMPassword(md5.digestHex("lzheng.1"));
 //        member.setStatus(1);
 //        dao.insert(member);
 //    }
+
+
 //    @Test
 //    void contextLoads2() {
 //        Item item=new Item();
@@ -53,7 +65,7 @@ class FamilyfinanceApplicationTests {
 //         String x="99.9";
 //        Order order=new Order();
 //            order.setIId(1);
-//            order.setMId(1);
+//            order.setMId(2);
 //            order.setOMoney(new BigDecimal(x));
 //            order.setStatus(1);
 //            order.setOTips("hh");
@@ -62,36 +74,45 @@ class FamilyfinanceApplicationTests {
 ////        }
 //
 //    }
-//    //根据日期条件查询
+    //根据日期条件查询
+    @Test
+    void contextLoads4() {
+        String dateStr = "2019-11-27 ";
+        Date date = DateUtil.parse(dateStr);
+        Date date2 = DateUtil.parse("2020-06-07");
+        System.out.println(statisticsService.getResult(date, date2, 2));
+    }
+
+
+    @Test
+    void contextLoads42() {
+
+        for (int i = 0; i < 150; i++) {
+            int mid = 1013;
+            int iid = RandomUtil.randomInt(1, 5);
+            int dateId = RandomUtil.randomInt(10, 30);
+            BigDecimal bigDecimal = RandomUtil.randomBigDecimal(new BigDecimal(0), new BigDecimal(300));
+            String dateStr = "2020-06-01";
+            Date date = DateUtil.parse(dateStr);
+            Order order = new Order();
+            order.setStatus(1);
+            order.setODate(date);
+            order.setOMoney(bigDecimal);
+            order.setMId(mid);
+            order.setIId(iid);
+
+            orderDao.insert(order);
+        }
+    }
+
+
 //    @Test
-//    void contextLoads4() {
-//        String dateStr = "2019-11-27 ";
-//        Date date = DateUtil.parse(dateStr);
-//        Date date2 = DateUtil.parse("2020-06-07");
-//        orderDao.selectByDate(date,date2).forEach(h->{
-//            System.out.println(h.getIName()+" : "+h.getMName());
-//        });
+//    void test10(){
+//        itemService.deleteItem(new Integer[]{1,2,3,4});
 //    }
-//
-//    @Test
-//    void contextLoads42() {
-//
-//        for(int i=0;i<50;i++){
-//            int mid=RandomUtil.randomInt(1,5);
-//            int iid=RandomUtil.randomInt(1,5);
-//            int dateId=RandomUtil.randomInt(10,30);
-//            BigDecimal bigDecimal = RandomUtil.randomBigDecimal(new BigDecimal(0), new BigDecimal(300));
-//            String dateStr = "2020-05-"+dateId;
-//            Date date = DateUtil.parse(dateStr);
-//            Order order = new Order();
-//            order.setStatus(1);
-//            order.setODate(date);
-//            order.setOMoney(bigDecimal);
-//            order.setMId(mid);
-//            order.setIId(iid);
-//
-//            orderDao.insert(order);
-//        }
+
+
+
 //
 //      ;
 //
@@ -119,5 +140,9 @@ class FamilyfinanceApplicationTests {
 //        });
 //
 //    }
-
+//    @Test
+//    void contextLoads8() {
+//        System.out.println(itemDao.selectName("yashi"));
+//
+//    }
 }

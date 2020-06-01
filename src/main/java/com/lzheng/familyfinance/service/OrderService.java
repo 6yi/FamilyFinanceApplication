@@ -2,8 +2,14 @@ package com.lzheng.familyfinance.service;
 
 import com.lzheng.familyfinance.dao.OrderDao;
 import com.lzheng.familyfinance.domain.Order;
+import com.lzheng.familyfinance.exception.GlobalException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionException;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.xml.crypto.Data;
 import java.util.Date;
@@ -19,6 +25,11 @@ import java.util.List;
 
 @Service
 public class OrderService {
+
+    @Autowired
+    DataSourceTransactionManager dataSourceTransactionManager;
+    @Autowired
+    TransactionDefinition transactionDefinition;
 
     @Autowired
     private OrderDao orderDao;
@@ -41,9 +52,30 @@ public class OrderService {
 
     }
 
-    public void updateOrderStatus(Integer oId,Integer mId){
-        orderDao.updateOrderStatus(oId,mId);
+
+    public void updateOrderStatus(Integer[] oIds,Integer mId){
+        TransactionStatus transactionStatus=null;
+        try {
+            transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
+            for (Integer oid:oIds
+                 ) {
+                orderDao.updateOrderStatus(oid,mId);
+            }
+            dataSourceTransactionManager.commit(transactionStatus);
+        } catch (Exception e) {
+            if(transactionStatus!=null){
+                dataSourceTransactionManager.rollback(transactionStatus);
+            }
+            new GlobalException(505,"事务失败");
+        }
     }
+
+
+    public void updateByPrimaryKey(Order order){
+        orderDao.updateByPrimaryKey(order);
+    }
+
+
     public void  addOrder(Order order){
         orderDao.insert(order);
     }

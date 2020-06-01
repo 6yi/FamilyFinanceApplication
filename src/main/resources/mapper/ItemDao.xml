@@ -23,7 +23,12 @@
     from item
     where i_type = #{type} and "status"=1
   </select>
-
+  <select id="selectAll" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from item
+    where  "status"=1
+  </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from item
@@ -82,4 +87,13 @@
       "status" = #{status,jdbcType=INTEGER}
     where i_id = #{iId,jdbcType=INTEGER}
   </update>
+
+  <select id="selectName" parameterType="java.lang.String" resultType="java.lang.String">
+    select top 1 i_name from item where i_name=#{name} and "status"=1
+  </select>
+
+  <update id="updateItemStatus" parameterType="java.lang.Integer">
+    update item set "status"=0 where i_id=#{id}
+  </update>
+
 </mapper>

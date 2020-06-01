@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lzheng.familyfinance.dao.TipsDao">
+  <resultMap id="BaseResultMap" type="com.lzheng.familyfinance.domain.Tips">
+    <id column="t_id" jdbcType="INTEGER" property="tId" />
+    <result column="t_title" jdbcType="VARCHAR" property="tTitle" />
+    <result column="t_body" jdbcType="VARCHAR" property="tBody" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    t_id, t_title, t_body, "status"
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tips
+    where t_id = #{tId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tips
+    where t_id = #{tId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="t_id" keyProperty="tId" parameterType="com.lzheng.familyfinance.domain.Tips" useGeneratedKeys="true">
+    insert into tips (t_title, t_body, "status"
+      )
+    values (#{tTitle,jdbcType=VARCHAR}, #{tBody,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="t_id" keyProperty="tId" parameterType="com.lzheng.familyfinance.domain.Tips" useGeneratedKeys="true">
+    insert into tips
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="tTitle != null">
+        t_title,
+      </if>
+      <if test="tBody != null">
+        t_body,
+      </if>
+      <if test="status != null">
+        "status",
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="tTitle != null">
+        #{tTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="tBody != null">
+        #{tBody,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lzheng.familyfinance.domain.Tips">
+    update tips
+    <set>
+      <if test="tTitle != null">
+        t_title = #{tTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="tBody != null">
+        t_body = #{tBody,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        "status" = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where t_id = #{tId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lzheng.familyfinance.domain.Tips">
+    update tips
+    set t_title = #{tTitle,jdbcType=VARCHAR},
+      t_body = #{tBody,jdbcType=VARCHAR},
+      "status" = #{status,jdbcType=INTEGER}
+    where t_id = #{tId,jdbcType=INTEGER}
+  </update>
+
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select * from tips where "status"=1
+  </select>
+
+  <update id="updateTips" parameterType="java.lang.Integer">
+    update tips set "status"=0 where t_id=#{tid}
+  </update>
+</mapper>

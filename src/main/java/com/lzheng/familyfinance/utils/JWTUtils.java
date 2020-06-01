@@ -40,26 +40,28 @@ public class JWTUtils {
         return jwt;
     }
 
-    public static playLoad toJWT(String token){
-        String[] jwts = token.split("\\.");
-        try{
-            if(!digester.digestHex(jwts[0]+jwts[1]+SALT).equals(jwts[2])){
-                System.out.println("不对劲,兄弟");
-                return  null;
-            }else{
-                String decodeStr=Base64.decodeStr(jwts[1]);
-                playLoad t =JSON.parseObject(decodeStr).toJavaObject(playLoad.class);
-                long time = System.currentTimeMillis();
-                System.out.println(t.getExpired()+" :  "+time);
-                if(t.getExpired()<time){
+    public synchronized static playLoad toJWT(String token){
+
+            String[] jwts = token.split("\\.");
+            try {
+                if (!digester.digestHex(jwts[0] + jwts[1] + SALT).equals(jwts[2])) {
+                    System.out.println("不对劲,兄弟");
                     return null;
+                } else {
+                    String decodeStr = Base64.decodeStr(jwts[1]);
+                    playLoad t = JSON.parseObject(decodeStr).toJavaObject(playLoad.class);
+                    long time = System.currentTimeMillis();
+                    System.out.println(t.getExpired() + " :  " + time);
+                    if (t.getExpired() < time) {
+                        return null;
+                    }
+                    return t;
                 }
-                return t;
+            } catch (Exception e) {
+                System.out.println(e);
+                return null;
             }
-        }catch (Exception e){
-            System.out.println(e);
-            return null;
-        }
+
     }
 
 }

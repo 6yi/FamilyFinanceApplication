@@ -30,9 +30,12 @@ public class Configuration {
     public FilterRegistrationBean jwtFilter() {
         final FilterRegistrationBean registrationBean = new FilterRegistrationBean();
         registrationBean.setFilter(new TokenFilter());
-        //添加需要拦截的url
+
         List<String> urlPatterns = new ArrayList<>();
         urlPatterns.add("/order/*");
+        urlPatterns.add("/item/*");
+        urlPatterns.add("/statistics/*");
+        urlPatterns.add("/cookie/login");
         registrationBean.setOrder(2);
         registrationBean.addUrlPatterns(urlPatterns.toArray(new String[urlPatterns.size()]));
         return registrationBean;
@@ -46,8 +49,6 @@ public class Configuration {
         registration.setName("corsFilter");
         //将其注册在其他过滤器的前面
         registration.setOrder(0);
-
-
         return registration;
     }
 

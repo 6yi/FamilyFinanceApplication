@@ -32,4 +32,7 @@ public interface OrderDao {
 
     List<Order> selectByDateAndMid(@Param(value = "startDate") Date startDate
             ,@Param(value = "endDate") Date endDate,@Param(value = "mid") Integer mid);
+
+
+    void updateOrderByIid(Integer id);
 }
