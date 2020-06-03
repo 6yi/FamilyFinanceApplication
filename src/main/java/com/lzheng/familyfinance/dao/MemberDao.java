@@ -16,6 +16,7 @@ public interface MemberDao {
 
     int updateByPrimaryKey(Member record);
 
+    Member selectByUserName(String username);
 
-    Member selectByUserNameAndPassword(@Param(value = "username") String username,@Param(value = "password") String password);
+    Member selectByUserNameAndPassword(String username, String password);
 }

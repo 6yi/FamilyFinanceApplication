@@ -51,7 +51,7 @@ public class JWTUtils {
                     String decodeStr = Base64.decodeStr(jwts[1]);
                     playLoad t = JSON.parseObject(decodeStr).toJavaObject(playLoad.class);
                     long time = System.currentTimeMillis();
-                    System.out.println(t.getExpired() + " :  " + time);
+
                     if (t.getExpired() < time) {
                         return null;
                     }

@@ -42,7 +42,6 @@ public class TokenFilter  extends GenericFilterBean {
                 final String token = authHeader.substring(7);
                 playLoad playLoad = JWTUtils.toJWT(token);
                 if(playLoad==null){
-                    System.out.println("playLoad is null?");
                    response.sendError(403);
                     return;
                 }

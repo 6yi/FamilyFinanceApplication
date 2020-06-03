@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lzheng.familyfinance.dao.QuotaDao">
+  <resultMap id="BaseResultMap" type="com.lzheng.familyfinance.domain.Quota">
+    <id column="q_id" jdbcType="INTEGER" property="qId" />
+    <result column="m_id" jdbcType="INTEGER" property="mId" />
+    <result column="q_expenses" jdbcType="DECIMAL" property="qExpenses" />
+    <result column="q_limit" jdbcType="DECIMAL" property="qLimit" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    q_id, m_id, q_expenses, q_limit
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from quota
+    where m_id = #{mId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from quota
+    where q_id = #{qId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="q_id" keyProperty="qId" parameterType="com.lzheng.familyfinance.domain.Quota" useGeneratedKeys="true">
+    insert into quota (m_id, q_expenses, q_limit
+      )
+    values (#{mId,jdbcType=INTEGER}, #{qExpenses,jdbcType=DECIMAL}, #{qLimit,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" keyColumn="q_id" keyProperty="qId" parameterType="com.lzheng.familyfinance.domain.Quota" useGeneratedKeys="true">
+    insert into quota
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="mId != null">
+        m_id,
+      </if>
+      <if test="qExpenses != null">
+        q_expenses,
+      </if>
+      <if test="qLimit != null">
+        q_limit,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="mId != null">
+        #{mId,jdbcType=INTEGER},
+      </if>
+      <if test="qExpenses != null">
+        #{qExpenses,jdbcType=DECIMAL},
+      </if>
+      <if test="qLimit != null">
+        #{qLimit,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lzheng.familyfinance.domain.Quota">
+    update quota
+    <set>
+      <if test="mId != null">
+        m_id = #{mId,jdbcType=INTEGER},
+      </if>
+      <if test="qExpenses != null">
+        q_expenses = #{qExpenses,jdbcType=DECIMAL},
+      </if>
+      <if test="qLimit != null">
+        q_limit = #{qLimit,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where q_id = #{qId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lzheng.familyfinance.domain.Quota">
+    update quota
+    set m_id = #{mId,jdbcType=INTEGER},
+      q_expenses = #{qExpenses,jdbcType=DECIMAL},
+      q_limit = #{qLimit,jdbcType=DECIMAL}
+    where q_id = #{qId,jdbcType=INTEGER}
+  </update>
+
+  <update id="resetQuota">
+     update quota set q_expenses=0 where "status"=1
+  </update>
+
+  <update id="updateEexpenses">
+    update quota set q_expenses+=#{money} where m_id=#{mid}
+  </update>
+
+</mapper>

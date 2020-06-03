@@ -1,6 +1,9 @@
 package com.lzheng.familyfinance.service;
 
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import com.lzheng.familyfinance.dao.OrderDao;
+import com.lzheng.familyfinance.dao.QuotaDao;
 import com.lzheng.familyfinance.domain.Order;
 import com.lzheng.familyfinance.exception.GlobalException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +37,10 @@ public class OrderService {
     @Autowired
     private OrderDao orderDao;
 
+    @Autowired
+    private QuotaDao quotaDao;
+
+
 
     // TODO
     public List<Order> getAllOrder(){
@@ -53,22 +60,43 @@ public class OrderService {
     }
 
 
-    public void updateOrderStatus(Integer[] oIds,Integer mId){
-        TransactionStatus transactionStatus=null;
+
+    /**
+     * @author 6yi
+     * @date 2020/6/2
+     * @return
+     * @Description       这里写崩了,早期没想好要统一处理,只传了OID过了,自己给自己挖坑了.......有空再改把...
+     **/
+    public void updateOrderStatus(Integer[] oIds,Integer mId) {
+        TransactionStatus transactionStatus = null;
         try {
             transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
-            for (Integer oid:oIds
-                 ) {
-                orderDao.updateOrderStatus(oid,mId);
+            for (Integer oid : oIds
+            ) {
+                orderDao.updateOrderStatus(oid, mId);
+                Order order = orderDao.selectByPrimaryKey(oid);
+
+                if (order.getIType().equals("支出")) {
+                    Date oDate = order.getODate();
+                    DateTime date = DateUtil.date(System.currentTimeMillis());
+                    String monthStart = date.toString("YYYY-MM") + "-01";
+                    DateTime dateTime = DateUtil.parse(monthStart);
+                    if (oDate.getTime() >= dateTime.getTime()) {
+                        quotaDao.updateEexpenses(order.getOMoney().negate(), order.getMId());
+                    }
+
+                }
             }
-            dataSourceTransactionManager.commit(transactionStatus);
-        } catch (Exception e) {
-            if(transactionStatus!=null){
-                dataSourceTransactionManager.rollback(transactionStatus);
+                dataSourceTransactionManager.commit(transactionStatus);
+            } catch(Exception e){
+                if (transactionStatus != null) {
+                    dataSourceTransactionManager.rollback(transactionStatus);
+                }
+                throw new GlobalException(505, "事务失败" + e.getMessage());
             }
-            new GlobalException(505,"事务失败");
         }
-    }
+
+
 
 
     public void updateByPrimaryKey(Order order){
@@ -77,7 +105,31 @@ public class OrderService {
 
 
     public void  addOrder(Order order){
-        orderDao.insert(order);
+        TransactionStatus transactionStatus=null;
+        try {
+            transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
+
+           if (order.getIType().equals("支出")){
+               Date oDate = order.getODate();
+               DateTime date = DateUtil.date(System.currentTimeMillis());
+               String monthStart = date.toString("YYYY-MM")+"-01";
+               DateTime dateTime = DateUtil.parse(monthStart);
+               if(oDate.getTime()>=dateTime.getTime()){
+                   quotaDao.updateEexpenses(order.getOMoney(),order.getMId());
+               }
+
+           }
+
+            orderDao.insert(order);
+            dataSourceTransactionManager.commit(transactionStatus);
+        } catch (Exception e) {
+            if(transactionStatus!=null){
+                dataSourceTransactionManager.rollback(transactionStatus);
+            }
+            new GlobalException(505,"事务失败");
+        }
+
+
     }
 
 

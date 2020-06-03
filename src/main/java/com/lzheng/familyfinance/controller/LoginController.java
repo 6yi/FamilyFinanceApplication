@@ -6,7 +6,6 @@ import com.lzheng.familyfinance.dto.Result;
 import com.lzheng.familyfinance.service.MemberService;
 import com.lzheng.familyfinance.utils.JWTUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,15 +29,13 @@ public class LoginController {
     @PostMapping("/login")
     public Result login(@RequestParam(value = "username", required = true) String username,
                         @RequestParam(value = "password", required = true) String password){
-
-
         Member member = memberService.login(username, password);
         Result result = new Result();
         if(member==null){
             result.setCode(500);
             result.setMsg("用户名或密码错误");
         }else{
-            result.setCode(200);
+            result.setCode(0);
             JWT newJwt = JWTUtils.getNewJwt(member.getMType(),member.getMId());
             result.setMsg(newJwt.getHead()+"."+newJwt.getPlayLoad()+"."+newJwt.getSignal());
             ArrayList<Object> members = new ArrayList<>();
@@ -47,5 +44,8 @@ public class LoginController {
         }
         return  result;
     }
+
+
+
 
 }

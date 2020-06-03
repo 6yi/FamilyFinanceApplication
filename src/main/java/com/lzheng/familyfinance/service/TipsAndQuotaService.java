@@ -1,6 +1,8 @@
 package com.lzheng.familyfinance.service;
 
+import com.lzheng.familyfinance.dao.QuotaDao;
 import com.lzheng.familyfinance.dao.TipsDao;
+import com.lzheng.familyfinance.domain.Quota;
 import com.lzheng.familyfinance.domain.Tips;
 import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,8 @@ public class TipsAndQuotaService {
     @Autowired
     private TipsDao tipsDao;
 
+    @Autowired
+    private QuotaDao quotaDao;
     public List<Tips> getTips(){
         return tipsDao.selectAll();
     }
@@ -30,5 +34,15 @@ public class TipsAndQuotaService {
         tipsDao.updateTips(tid);
     }
 
+    public void addTips(Tips tips){
+        tipsDao.insert(tips);
+    }
 
+    public Quota getQuota(Integer id){
+        return quotaDao.selectByPrimaryKey(id);
+    }
+
+    public void updateQuota(Quota quota){
+        quotaDao.updateByPrimaryKey(quota);
+    }
 }

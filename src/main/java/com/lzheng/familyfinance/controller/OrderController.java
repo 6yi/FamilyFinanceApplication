@@ -34,6 +34,8 @@ public class OrderController {
     private OrderService orderService;
 
 
+
+
     @PostMapping("/get")
     public Result getOrder(){
         List<Order> allOrder = orderService.getAllOrder();
@@ -45,18 +47,17 @@ public class OrderController {
     }
 
     @DeleteMapping("/delete")
-    public Result getOrderByTime(@RequestBody JSONObject jsonParam, HttpServletRequest request){
-
+    public Result deleteOrder(@RequestBody JSONObject jsonParam, HttpServletRequest request){
         try{
-
             DeleteDTO deleteDTO = jsonParam.toJavaObject(DeleteDTO.class);
             Integer mid=deleteDTO.getMid();
             Integer tmid=(Integer) request.getAttribute("mid");
-            if(tmid!=mid){
+            if(!tmid.equals(mid)){
                 throw new GlobalException(302,"你别瞎删别人的,兄弟");
             }
 
             orderService.updateOrderStatus(deleteDTO.getOids(),tmid);
+
             Result result = new Result();
             result.setCode(0);
             result.setMsg("success");
@@ -85,7 +86,6 @@ public class OrderController {
     public Result getOrderByTime(@RequestParam(value = "start", required = true) String start
             ,@RequestParam(value = "end", required = true) String end){
         try{
-            System.out.println(start+"   :   "+end);
             Date startDate = DateUtil.parse(start);
             Date endDate = DateUtil.parse(end);
             List<Order> orderByTime = orderService.getOrderByTime(startDate, endDate);
@@ -109,7 +109,7 @@ public class OrderController {
             Date endDate = DateUtil.parse(end);
             Integer tmid=(Integer)request.getAttribute("mid");
             if(!mid.equals(tmid)){
-                System.out.println(mid+" : "+tmid);
+
                 throw new GlobalException(302,"禁止查看他人账单");
             }
             List<Order> orderByTime = orderService.getOrderByTimeAndMid(startDate, endDate,mid);
@@ -133,19 +133,21 @@ public class OrderController {
             ,@RequestParam(value = "money", required = true) String money
             ,@RequestParam(value = "tips", required = true) String tips
             ,@RequestParam(value = "time", required = true) String time
-            ,@RequestParam(value = "mid", required = true) Integer mid){
+            ,@RequestParam(value = "mid", required = true) Integer mid
+            ,HttpServletRequest request){
         Result result = new Result();
         try{
             DateTime dateTime = DateUtil.parse(time);
-
             Order order = new Order();
-
-
-
             order.setIId(item);
             order.setMId(mid);
             order.setOTips(tips);
             order.setODate(dateTime);
+            if(type.equals(1)){
+                order.setIType("支出");
+            }else{
+                order.setIType("收入");
+            }
             order.setOMoney(new BigDecimal(money));
             order.setStatus(1);
             orderService.addOrder(order);

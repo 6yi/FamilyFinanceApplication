@@ -36,6 +36,7 @@ public class Configuration {
         urlPatterns.add("/item/*");
         urlPatterns.add("/statistics/*");
         urlPatterns.add("/cookie/login");
+        urlPatterns.add("/updatequota");
         registrationBean.setOrder(2);
         registrationBean.addUrlPatterns(urlPatterns.toArray(new String[urlPatterns.size()]));
         return registrationBean;
