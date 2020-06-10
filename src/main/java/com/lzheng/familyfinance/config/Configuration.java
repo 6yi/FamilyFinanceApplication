@@ -19,25 +19,22 @@ import java.util.List;
 
 @org.springframework.context.annotation.Configuration
 public class Configuration {
-
     @Bean
     public Digester digester(){
         return new Digester(DigestAlgorithm.MD5);
     }
-
-
     @Bean
     public FilterRegistrationBean jwtFilter() {
         final FilterRegistrationBean registrationBean = new FilterRegistrationBean();
         registrationBean.setFilter(new TokenFilter());
-
         List<String> urlPatterns = new ArrayList<>();
         urlPatterns.add("/order/*");
         urlPatterns.add("/item/*");
         urlPatterns.add("/statistics/*");
         urlPatterns.add("/cookie/login");
         urlPatterns.add("/updatequota");
-        registrationBean.setOrder(2);
+        urlPatterns.add("/member/*");
+        registrationBean.setOrder(1);
         registrationBean.addUrlPatterns(urlPatterns.toArray(new String[urlPatterns.size()]));
         return registrationBean;
     }
@@ -48,7 +45,7 @@ public class Configuration {
         registration.setFilter(new CorsFilter());
         registration.addUrlPatterns("/*");
         registration.setName("corsFilter");
-        //将其注册在其他过滤器的前面
+        //将其注册在JWT过滤器的前面
         registration.setOrder(0);
         return registration;
     }

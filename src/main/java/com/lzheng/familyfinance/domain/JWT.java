@@ -20,7 +20,6 @@ public class JWT {
     private String head;
     private String playLoad;
     private String signal;
-
 }
 
 

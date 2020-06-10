@@ -32,10 +32,6 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
-
-
-
-
     @PostMapping("/get")
     public Result getOrder(){
         List<Order> allOrder = orderService.getAllOrder();
@@ -55,9 +51,7 @@ public class OrderController {
             if(!tmid.equals(mid)){
                 throw new GlobalException(302,"你别瞎删别人的,兄弟");
             }
-
             orderService.updateOrderStatus(deleteDTO.getOids(),tmid);
-
             Result result = new Result();
             result.setCode(0);
             result.setMsg("success");
@@ -70,7 +64,10 @@ public class OrderController {
     @PutMapping("/update")
     public Result updateOrder(@RequestBody JSONObject jsonParam){
         try{
+
             Order order = jsonParam.toJavaObject(Order.class);
+
+            System.out.println(order);
             orderService.updateByPrimaryKey(order);
             Result result = new Result();
             result.setCode(0);
@@ -99,6 +96,7 @@ public class OrderController {
         }
     }
 
+
     @PostMapping("/getbytimeandmid")
     public Result getOrderByTime(@RequestParam(value = "start", required = true) String start
             ,@RequestParam(value = "end", required = true) String end
@@ -124,9 +122,6 @@ public class OrderController {
     }
 
 
-
-
-
     @PostMapping("/addorder")
     public Result addOrder(@RequestParam(value = "type", required = true) Integer type
             ,@RequestParam(value = "item", required = true) Integer item
@@ -135,7 +130,10 @@ public class OrderController {
             ,@RequestParam(value = "time", required = true) String time
             ,@RequestParam(value = "mid", required = true) Integer mid
             ,HttpServletRequest request){
+
+
         Result result = new Result();
+
         try{
             DateTime dateTime = DateUtil.parse(time);
             Order order = new Order();

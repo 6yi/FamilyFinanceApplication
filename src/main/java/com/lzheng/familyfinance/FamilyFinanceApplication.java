@@ -15,7 +15,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @MapperScan("com.lzheng.familyfinance.dao")
 public class FamilyFinanceApplication {
     public static void main(String[] args) {
-
         SpringApplication.run(FamilyFinanceApplication.class, args);
     }
 }

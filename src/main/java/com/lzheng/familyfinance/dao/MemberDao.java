@@ -19,4 +19,9 @@ public interface MemberDao {
     Member selectByUserName(String username);
 
     Member selectByUserNameAndPassword(String username, String password);
+
+    int updateName(Member record);
+
+    int updatePassword(Member record);
+
 }

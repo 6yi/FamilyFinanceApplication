@@ -15,6 +15,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.xml.crypto.Data;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -97,10 +98,42 @@ public class OrderService {
         }
 
 
-
-
     public void updateByPrimaryKey(Order order){
-        orderDao.updateByPrimaryKey(order);
+        TransactionStatus transactionStatus=null;
+        try {
+            transactionStatus = dataSourceTransactionManager.getTransaction(transactionDefinition);
+
+            Date oDate = order.getODate();
+            DateTime date = DateUtil.date(System.currentTimeMillis());
+            String monthStart = date.toString("YYYY-MM")+"-01";
+            DateTime dateTime = DateUtil.parse(monthStart);
+            if(oDate.getTime()>=dateTime.getTime()) {
+                if(order.getIType().equals("1")){
+                    order.setIType("支出");
+                }else{
+                    order.setIType("收入");
+                }
+                Order order1 = orderDao.selectByPrimaryKey(order.getOId());
+                if (order1.getIType().equals(order.getIType()) && order1.getIType().equals("支出")) {
+                    //支出改变金额,加上修改前后的差值
+                    BigDecimal bigDecimal = order.getOMoney().subtract(order1.getOMoney());
+                    quotaDao.updateEexpenses(bigDecimal, order.getMId());
+                } else if (!order1.getIType().equals(order.getIType()) && order1.getIType().equals("支出")) {
+                    //支出改为收入,只需要减掉之前的
+                    quotaDao.updateEexpenses(order1.getOMoney().negate(), order.getMId());
+                } else if (order1.getIType().equals("收入") && order.getIType().equals("支出")) {
+                    //收入改为支出,直接加上新修改后的值
+                    quotaDao.updateEexpenses(order.getOMoney().negate(), order.getMId());
+                }
+            }
+            orderDao.updateByPrimaryKey(order);
+            dataSourceTransactionManager.commit(transactionStatus);
+        } catch (Exception e) {
+            if(transactionStatus!=null){
+                dataSourceTransactionManager.rollback(transactionStatus);
+            }
+           throw  new GlobalException(505,"事务失败");
+        }
     }
 
 
@@ -126,7 +159,7 @@ public class OrderService {
             if(transactionStatus!=null){
                 dataSourceTransactionManager.rollback(transactionStatus);
             }
-            new GlobalException(505,"事务失败");
+            throw  new GlobalException(505,"事务失败");
         }
 
 

@@ -107,4 +107,18 @@
       "status" = #{status,jdbcType=INTEGER}
     where m_id = #{mId,jdbcType=INTEGER}
   </update>
+
+  <update id="updateName" parameterType="com.lzheng.familyfinance.domain.Member">
+    update member
+    set  m_name = #{mName,jdbcType=VARCHAR}
+    where m_id = #{mId,jdbcType=INTEGER}
+  </update>
+
+  <update id="updatePassword" parameterType="com.lzheng.familyfinance.domain.Member">
+    update member
+    set
+    m_password = #{mPassword,jdbcType=VARCHAR}
+    where m_id = #{mId,jdbcType=INTEGER}
+  </update>
+
 </mapper>

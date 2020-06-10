@@ -16,7 +16,6 @@ import java.io.IOException;
  * @Version 1.0
  * @Description:
  */
-
 public class TokenFilter  extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest req
@@ -24,16 +23,12 @@ public class TokenFilter  extends GenericFilterBean {
             , FilterChain chain) throws IOException, ServletException {
         final HttpServletRequest request = (HttpServletRequest) req;
         final HttpServletResponse response = (HttpServletResponse) res;
-        //等到请求头信息authorization信息
-
         if ("OPTIONS".equals(request.getMethod())) {
-
             response.setStatus(HttpServletResponse.SC_OK);
             chain.doFilter(req, res);
             return;
         } else {
             final String authHeader = request.getHeader("authorization");
-
             if (authHeader == null || !authHeader.startsWith("bearer;")) {
                 response.sendError(403);
                 return;
